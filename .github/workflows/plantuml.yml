@@ -1,25 +1,27 @@
-name: Generate UML Diagram
-on: 
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+name: Auto UML Diagram
+on: [push, workflow_dispatch]
 
 jobs:
   generate-uml:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Generate PNG diagram
+
+      - name: Generate UML
+        run: |
+          wget https://github.com/asciidoctor/jarviz/releases/download/v0.3.0/jarviz-0.3.0.zip
+          unzip jarviz-0.3.0.zip
+          ./jarviz/bin/jarviz -i ./bin -o diagrams/auto_uml.puml -f plantuml
+          
+      - name: Render PNG
         uses: docker://plantuml/plantuml
         with:
-          args: -tpng src/**/*.java -o diagrams
-          
-      - name: Commit and push diagram
+          args: -tpng diagrams/auto_uml.puml -o diagrams
+
+      - name: Commit Diagram
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git pull
-          git add attachment/*
-          git commit -m "Update UML diagram [skip ci]" || echo "Sem alterações para commit"
+          git add attachment/
+          git commit -m "Gerado automaticamente diagrama do projeto com workflow" || echo "Sem mudanças no diagrama"
           git push
