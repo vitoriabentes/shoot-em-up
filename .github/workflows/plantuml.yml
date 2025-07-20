@@ -1,10 +1,25 @@
-name: Generate UML
-on: push
+name: Generate UML Diagram
+on: 
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
-  build:
+  generate-uml:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Generate UML
+      - uses: actions/checkout@v4
+      
+      - name: Generate PNG diagram
+        uses: docker://plantuml/plantuml
+        with:
+          args: -tpng src/**/*.java -o diagrams
+          
+      - name: Commit and push diagram
         run: |
-          docker run -v $PWD:/data plantuml/plantuml src/**/*.java
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git pull
+          git add attachment/*
+          git commit -m "Update UML diagram [skip ci]" || echo "Sem alterações para commit"
+          git push
