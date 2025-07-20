@@ -1,7 +1,7 @@
 # 🚀 Shoot 'Em Up - Java  
 Um jogo *shoot 'em up* simples criado em Java com três tipos de inimigos e sistema de power-ups.  
 
-![Execução do Shoot 'em Up](attachment/execution.mp4)
+![Execução do Shoot 'em Up](attachment/execution.gif)
 
 ## 🎮 **Como Jogar**  
 1. **Execute** a classe `Main.java`.  
